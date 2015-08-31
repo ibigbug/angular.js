@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>NgPerf Test</title>
+    <script src="../build/angular.js"></script>
+  </head>
+  <body ng-app="app">
+    <div ng-controller="Ctrl">
+      {{ info }}
+    </div>
+  </body>
+  <script type="text/javascript" charset="utf-8">
+    angular.module('app', [])
+    .controller('Ctrl', function($scope, $timeout) {
+      $scope.info = 123
+      $timeout(function() {
+        $scope.info = 456
+      }, 2000)
+    })
+  </script>
+</html>

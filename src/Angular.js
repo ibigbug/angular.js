@@ -1473,10 +1473,17 @@ function getNgAttribute(element, ngAttr) {
    </file>
  </example>
  */
+var ngInitStartedAt = null;
+var first_digest = true;
+
 function angularInit(element, bootstrap) {
   var appElement,
       module,
       config = {};
+
+  ngInitStartedAt = Date.now()
+  console.info('Analysising...');
+  console.log('ng starts bootstrapping at: ' + ngInitStartedAt);
 
   // The element `element` has priority over any other element
   forEach(ngAttrPrefixes, function(prefix) {

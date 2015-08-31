@@ -67,6 +67,18 @@
  * They also provide an event emission/broadcast and subscription facility. See the
  * {@link guide/scope developer guide on scopes}.
  */
+
+var digestEndTimer = null;
+var CHECK_DIGEST_STABLE_DELAY = 3 * 1000;
+var stableHandler = function() {
+  if (first_digest) {
+    first_digest = false;
+    var firstLoadEndedAt = Date.now()
+    console.log('First screen digest stabled at: ' + (firstLoadEndedAt - CHECK_DIGEST_STABLE_DELAY));
+    console.log('First big digest used: ' + (firstLoadEndedAt - ngInitStartedAt - CHECK_DIGEST_STABLE_DELAY));
+  }
+}
+
 function $RootScopeProvider() {
   var TTL = 10;
   var $rootScopeMinErr = minErr('$rootScope');
@@ -729,6 +741,9 @@ function $RootScopeProvider() {
             watchLog = [],
             logIdx, logMsg, asyncTask;
 
+        if (isDefined(digestEndTimer)) {
+          window.clearTimeout(digestEndTimer);
+        }
         beginPhase('$digest');
         // Check for changes to browser url that happened in sync before the call to $digest
         $browser.$$checkUrlChange();
@@ -830,6 +845,9 @@ function $RootScopeProvider() {
             $exceptionHandler(e);
           }
         }
+
+        // One $digest ended
+        digestEndTimer = window.setTimeout(stableHandler, CHECK_DIGEST_STABLE_DELAY);
       },
 
 
