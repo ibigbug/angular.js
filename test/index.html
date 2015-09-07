@@ -18,6 +18,14 @@
       $timeout(function() {
         $scope.info = 456
       }, 2000)
+
+      $timeout(function(){
+        // 2nd digest
+        $scope.info = 789
+        $timeout(function(){
+          $scope.info = 'aaa'
+        }, 2000)
+      }, 7000)
     })
   </script>
 </html>

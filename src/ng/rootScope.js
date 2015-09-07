@@ -69,13 +69,19 @@
  */
 
 var digestEndTimer = null;
+var eachDigestStartedAt = null;
 var CHECK_DIGEST_STABLE_DELAY = 3 * 1000;
 var stableHandler = function() {
   if (first_digest) {
     first_digest = false;
-    var firstLoadEndedAt = Date.now()
+    var firstLoadEndedAt = Date.now();
     console.log('First screen digest stabled at: ' + (firstLoadEndedAt - CHECK_DIGEST_STABLE_DELAY));
     console.log('First big digest used: ' + (firstLoadEndedAt - ngInitStartedAt - CHECK_DIGEST_STABLE_DELAY));
+  } else {
+    var thisDigestEndedAt = Date.now();
+    console.log('This digest ended at: ' + (thisDigestEndedAt - CHECK_DIGEST_STABLE_DELAY));
+    console.log('This digest used: ' + (thisDigestEndedAt - eachDigestStartedAt - CHECK_DIGEST_STABLE_DELAY));
+    eachDigestStartedAt = null;
   }
 }
 
@@ -743,6 +749,11 @@ function $RootScopeProvider() {
 
         if (isDefined(digestEndTimer)) {
           window.clearTimeout(digestEndTimer);
+        }
+
+        if (!eachDigestStartedAt && !first_digest) {
+          eachDigestStartedAt = Date.now();
+          console.log('One digest started at: ' + (eachDigestStartedAt - CHECK_DIGEST_STABLE_DELAY));
         }
         beginPhase('$digest');
         // Check for changes to browser url that happened in sync before the call to $digest
